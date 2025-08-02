@@ -1,0 +1,260 @@
+# HAL AEROTHON'25 - Dataset Configuration
+# EO/IR Sensor Video Classification System
+
+dataset:
+  name: "HAL AEROTHON'25 EO/IR Dataset"
+  version: "1.0"
+  description: "Multi-spectral dataset for aerospace surveillance and defense applications"
+  created: "2025-01-19"
+  team: "Exception Hunters"
+  college: "Navkis College of Engineering"
+
+# Dataset Structure
+structure:
+  root: "datasets/"
+  directories:
+    EO:
+      - "training/humans"
+      - "training/vehicles"
+      - "training/aircraft"
+      - "training/drones"
+      - "training/backgrounds"
+      - "validation"
+      - "test"
+    IR:
+      - "training/humans"
+      - "training/vehicles"
+      - "training/aircraft"
+      - "training/drones"
+      - "training/backgrounds"
+      - "validation"
+      - "test"
+    FUSED:
+      - "training"
+      - "validation"
+      - "test"
+    VIDEOS:
+      - "EO_videos"
+      - "IR_videos"
+      - "FUSED_videos"
+    ANNOTATIONS:
+      - "YOLO_format"
+      - "COCO_format"
+      - "CUSTOM_format"
+
+# Dataset Sources
+sources:
+  primary:
+    flir_thermal:
+      name: "FLIR Thermal Dataset"
+      url: "https://www.flir.com/oem/adas/adas-dataset-form/"
+      description: "Thermal infrared images with annotations"
+      size: "~2GB"
+      classes: ["humans", "vehicles", "animals"]
+      format: "JPEG + JSON"
+      license: "Open Source"
+      
+    dota:
+      name: "DOTA (Dataset of Object Detection in Aerial Images)"
+      url: "https://captain-whu.github.io/DOTA/"
+      description: "Aerial images with object annotations"
+      size: "~15GB"
+      classes: ["aircraft", "vehicles", "ships", "buildings"]
+      format: "Large images + bounding boxes"
+      license: "Academic"
+      
+    visdrone:
+      name: "VisDrone Dataset"
+      url: "http://aiskyeye.com/"
+      description: "Drone-captured aerial images"
+      size: "~5GB"
+      classes: ["humans", "vehicles", "drones", "bicycles"]
+      format: "Images + detailed annotations"
+      license: "Academic"
+      
+    kaist_multispectral:
+      name: "KAIST Multi-Spectral Dataset"
+      url: "https://github.com/SoonminHwang/rgbt-ped-detection"
+      description: "Paired visible and thermal images"
+      size: "~8GB"
+      classes: ["humans", "vehicles"]
+      format: "Synchronized EO/IR image pairs"
+      license: "Academic"
+
+  secondary:
+    synthetic_data:
+      name: "Custom Synthetic Data"
+      description: "3D rendered scenarios using Blender/Unity"
+      size: "~5GB"
+      classes: ["humans", "vehicles", "aircraft", "drones"]
+      format: "Rendered images with perfect annotations"
+      generation: "Blender/Unity 3D engines"
+      
+    military_datasets:
+      name: "Military/Aerospace Datasets"
+      description: "Specialized defense and aerospace scenarios"
+      size: "~2GB"
+      classes: ["military_vehicles", "aircraft", "surveillance_targets"]
+      format: "Various formats with annotations"
+      source: "Academic research papers and defense publications"
+
+# Dataset Statistics
+statistics:
+  total_images: 50000
+  distribution:
+    EO_images: 25000
+    IR_images: 15000
+    fused_pairs: 10000
+    videos: 100
+  
+  class_distribution:
+    humans: 40  # percentage
+    vehicles: 30
+    aircraft: 20
+    drones: 10
+  
+  split_ratio:
+    training: 70  # percentage
+    validation: 15
+    test: 15
+
+# Environmental Conditions
+environmental_conditions:
+  day_night:
+    day: 60  # percentage
+    night: 40
+  
+  weather:
+    clear: 50
+    cloudy: 30
+    rain_fog: 20
+  
+  altitude:
+    ground_level: 40
+    low_altitude: 40
+    high_altitude: 20
+  
+  lighting:
+    natural: 60
+    artificial: 25
+    mixed: 15
+
+# Image Properties
+image_properties:
+  training_resolution: [640, 640]
+  inference_resolution: [1280, 1280]
+  formats:
+    EO: "JPEG"
+    IR: "PNG"
+    videos: "MP4"
+  channels:
+    EO: "RGB"
+    IR: "Grayscale"
+    fused: "RGB+Thermal"
+
+# Performance Metrics
+performance_metrics:
+  dataset_quality:
+    annotation_accuracy: 95  # percentage
+    class_balance_gini: 0.3  # should be < 0.3
+    image_quality_psnr: 30   # dB, should be > 30
+  
+  model_performance:
+    mAP_50: 94.2  # percentage
+    precision:
+      EO: 96.8
+      IR: 87.5
+      fused: 94.2
+    recall:
+      EO: 92.1
+      IR: 85.3
+      fused: 91.7
+    f1_score:
+      EO: 94.4
+      IR: 86.4
+      fused: 92.9
+
+# Preprocessing Configuration
+preprocessing:
+  augmentation:
+    - "RandomHorizontalFlip(p=0.5)"
+    - "RandomRotation(degrees=10)"
+    - "ColorJitter(brightness=0.2, contrast=0.2)"
+    - "RandomResizedCrop(size=(640, 640))"
+    - "GaussianBlur(kernel_size=3)"
+    - "RandomNoise(noise_factor=0.1)"
+  
+  normalization:
+    EO: "ImageNet normalization"
+    IR: "Min-max normalization"
+    fused: "Custom normalization"
+  
+  fusion_methods:
+    early_fusion: "Channel concatenation"
+    late_fusion: "Weighted feature combination"
+
+# Annotation Formats
+annotation_formats:
+  YOLO:
+    description: "YOLO format for object detection"
+    format: "class_id x_center y_center width height"
+    example: "0 0.5 0.5 0.2 0.3"
+  
+  COCO:
+    description: "COCO format for comprehensive annotations"
+    format: "JSON with images, annotations, categories"
+    includes: ["bounding_boxes", "segmentation", "keypoints"]
+  
+  CUSTOM:
+    description: "Custom format for EO/IR fusion"
+    format: "JSON with sensor-specific annotations"
+    includes: ["EO_bbox", "IR_bbox", "fusion_confidence"]
+
+# Usage Instructions
+usage:
+  training:
+    - "Download datasets using provided scripts"
+    - "Preprocess data with augmentation"
+    - "Generate annotations in required format"
+    - "Train models with YOLOv8 and EfficientNet"
+  
+  inference:
+    - "Load trained models for EO, IR, and fusion"
+    - "Process real-time video streams"
+    - "Apply predictive tracking algorithms"
+    - "Generate audio alerts and geolocation data"
+
+# External Resources
+external_resources:
+  annotation_tools:
+    - "LabelImg: https://github.com/tzutalin/labelImg"
+    - "CVAT: https://github.com/openvinotoolkit/cvat"
+    - "Roboflow: https://roboflow.com/"
+  
+  augmentation_libraries:
+    - "Albumentations: https://albumentations.ai/"
+    - "Imgaug: https://imgaug.readthedocs.io/"
+    - "Torchvision Transforms: https://pytorch.org/vision/stable/transforms.html"
+  
+  dataset_repositories:
+    - "FLIR Dataset: https://www.flir.com/oem/adas/adas-dataset-form/"
+    - "DOTA Dataset: https://captain-whu.github.io/DOTA/"
+    - "VisDrone Dataset: http://aiskyeye.com/"
+    - "KAIST Multi-Spectral: https://github.com/SoonminHwang/rgbt-ped-detection"
+
+# Checklist for HAL Hackathon
+checklist:
+  required:
+    EO_dataset: true
+    IR_dataset: true
+    fused_dataset: true
+    video_sequences: true
+    annotations: true
+    documentation: true
+    validation: true
+  
+  recommended:
+    synthetic_data: false
+    edge_cases: false
+    domain_adaptation: false
+    real_time_streaming: false 
